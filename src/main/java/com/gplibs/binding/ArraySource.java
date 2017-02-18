@@ -22,9 +22,8 @@ class ArraySource implements IDataSource {
         if (mArray == null || !propertyName.matches("\\[\\d+\\]")) {
             return null;
         }
-        int i = Integer.parseInt(propertyName.substring(1, propertyName.length() - 1));
         if (mArray.getClass().isArray()) {
-            return Array.get(mArray, i);
+            return Array.get(mArray, Integer.parseInt(propertyName.substring(1, propertyName.length() - 1)));
         } else {
             return null;
         }

@@ -480,7 +480,7 @@ public class CustomDataSourceAdapterActivity extends AppCompatActivity {
 ---
 _**8. Notes**_
 
-@Binding(source = "**", **target** = "text")
+@Binding(source = "..", **target** = "text")
 
 xx.set**Text**(text)  target is "**text**"
 
