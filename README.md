@@ -1,5 +1,17 @@
 # Android-data-binding
 
+_**0. Installation**_
+
+_gradle:_
+```Gradle
+dependencies {
+    compile 'com.gplibs:data-binding:1.0.0'
+}
+```
+
+<br />
+
+---
 _**1. JsonDataSource Binding**_
 
 _json_data_source_binding_json.txt:_
@@ -8,8 +20,6 @@ _json_data_source_binding_json.txt:_
     name: "my name"
 }
 ```
-
-<br />
 
 _StringJsonDataSourceBindingActivity:_
 ```Java
@@ -31,6 +41,8 @@ public class StringJsonDataSourceBindingActivity extends AppCompatActivity {
 }
 ```
 
+![image](https://github.com/gplibs/resources/raw/master/android/data-binding/readme/string_json_data_source_binding.png)
+
 <br />
 
 ---
@@ -45,8 +57,6 @@ _convert_binding_json.txt:_
     is_vip: true
 }
 ```
-
-<br />
 
 _BooleanToVisibilityConverter:_
 ```Java
@@ -88,8 +98,6 @@ class UrlToBitmapConverter implements IAsyncValueConverter {
 }
 ```
 
-<br />
-
 _ConvertBindingActivity:_
 ```Java
 public class ConvertBindingActivity extends AppCompatActivity {
@@ -123,6 +131,8 @@ public class ConvertBindingActivity extends AppCompatActivity {
 }
 ```
 
+![image](https://github.com/gplibs/resources/raw/master/android/data-binding/readme/convert_binding.png)
+
 <br />
 
 ---
@@ -137,8 +147,6 @@ _multi_binding_json.txt:_
 }
 ```
 
-<br />
-
 _BooleanToVisibilityConverter:_
 ```Java
 class BooleanToVisibilityConverter implements IValueConverter {
@@ -148,8 +156,6 @@ class BooleanToVisibilityConverter implements IValueConverter {
     }
 }
 ```
-
-<br />
 
 _MultiBindingActivity:_
 ```Java
@@ -177,6 +183,8 @@ public class MultiBindingActivity extends AppCompatActivity {
 }
 ```
 
+![image](https://github.com/gplibs/resources/raw/master/android/data-binding/readme/multi_binding.png)
+
 <br />
 
 ---
@@ -201,8 +209,6 @@ _path_binding_json.txt:_
     ]
 }
 ```
-
-<br />
 
 _PathBindingActivity:_
 ```Java
@@ -237,12 +243,14 @@ public class PathBindingActivity extends AppCompatActivity {
 }
 ```
 
+![image](https://github.com/gplibs/resources/raw/master/android/data-binding/readme/path_binding.png)
+
 <br />
 
 ---
 _**5. Other DataSource**_
 
-_a. TestModel:_
+_a. ModelSource:_
 
 ```Java
 class TestModel extends ModelSource {
@@ -285,6 +293,8 @@ public class ModelSourceActivity extends AppCompatActivity {
 
 }
 ```
+
+![image](https://github.com/gplibs/resources/raw/master/android/data-binding/readme/model_source_0.png) ![image](https://github.com/gplibs/resources/raw/master/android/data-binding/readme/model_source_1.png)
 
 _b. ArraySource:_
 
@@ -467,4 +477,17 @@ public class CustomDataSourceAdapterActivity extends AppCompatActivity {
 
 <br />
 
+---
+_**8. Notes**_
 
+@Binding(source = "**", **target** = "text")
+
+xx.set**Text**(text)  target is "**text**"
+
+xx.set**Visibility**(visibility)  target is "**visibility**"
+
+xx.set**BackgroundColor**(color)  target is "**backgroundColor**"
+
+...
+
+and so on
