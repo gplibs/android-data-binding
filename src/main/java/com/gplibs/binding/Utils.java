@@ -1,5 +1,7 @@
 package com.gplibs.binding;
 
+import android.text.TextUtils;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.lang.reflect.Field;
@@ -101,6 +103,18 @@ class Utils {
 
     static boolean equals(Object obj, Object obj1) {
         return (obj == null && obj1 == null) || (obj != null && obj.equals(obj1));
+    }
+
+    static Integer getArrayIndex(String propertyName) {
+        if (TextUtils.isEmpty(propertyName)) {
+            return null;
+        }
+        propertyName = propertyName.trim();
+        if (propertyName.matches("^\\[\\d+\\]$")) {
+            return Integer.parseInt(propertyName.substring(1, propertyName.length() - 1));
+        } else {
+            return null;
+        }
     }
 
     private static Field getSerializedField(Object obj, String fieldName) {

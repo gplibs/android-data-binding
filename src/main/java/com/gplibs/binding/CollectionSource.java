@@ -15,10 +15,10 @@ public class CollectionSource implements IDataSource {
 
     @Override
     public Object getProperty(String propertyName) {
-        if (mCollection == null || !propertyName.matches("\\[\\d+\\]")) {
+        Integer i = Utils.getArrayIndex(propertyName);
+        if (mCollection == null || i == null) {
             return null;
         }
-        int i = Integer.parseInt(propertyName.substring(1, propertyName.length() - 1));
         if (mCollection instanceof List) {
             return ((List)mCollection).get(i);
         } else {

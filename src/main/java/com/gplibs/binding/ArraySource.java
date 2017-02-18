@@ -19,11 +19,12 @@ class ArraySource implements IDataSource {
         if (TextUtils.isEmpty(propertyName)) {
             return mArray;
         }
-        if (mArray == null || !propertyName.matches("\\[\\d+\\]")) {
+        Integer i = Utils.getArrayIndex(propertyName);
+        if (mArray == null || i == null) {
             return null;
         }
         if (mArray.getClass().isArray()) {
-            return Array.get(mArray, Integer.parseInt(propertyName.substring(1, propertyName.length() - 1)));
+            return Array.get(mArray, i);
         } else {
             return null;
         }

@@ -75,10 +75,7 @@ class JsonSource implements IDataSource {
     }
 
     private Object convertPropertyName(String field) {
-        if (field.matches("\\[\\d+\\]")) {
-            return Integer.parseInt(field.substring(1, field.length() - 1));
-        } else {
-            return field;
-        }
+        Integer i = Utils.getArrayIndex(field);
+        return i == null ? field : i;
     }
 }
