@@ -1,6 +1,8 @@
-# Android-data-binding
+﻿# android-data-binding
 
-_**0. Installation**_
+这是一个可以将 json 字符串 直接绑定到 view 上的库， 不用先将 json 转换为 model 类。
+
+_**1. 安装**_
 
 _gradle:_
 ```Gradle
@@ -12,9 +14,9 @@ dependencies {
 <br />
 
 ---
-_**1. JsonDataSource Binding**_
+_**2. 一个简单的例子**_
 
-_json_data_source_binding_json.txt:_
+_json字符串数据源 json_data_source_binding_json.txt:_
 ```JavaScript
 {
     name: "my name"
@@ -25,6 +27,7 @@ _StringJsonDataSourceBindingActivity:_
 ```Java
 public class StringJsonDataSourceBindingActivity extends AppCompatActivity {
 
+    // 将 json 中的 name 字符段绑定到 TextView 的 text 上
     @Binding(source = "name", target = "text")
     private TextView tvName;
 
@@ -35,20 +38,26 @@ public class StringJsonDataSourceBindingActivity extends AppCompatActivity {
 
         tvName = (TextView) findViewById(R.id.tv_name);
 
+        // 读取json数据
         String json = Utils.readText("json_data_source_binding_json.txt");
+        // 绑定操作
         BindingManager.binding(json, this);
     }
 }
 ```
+
+运行结果
 
 ![image](https://github.com/gplibs/resources/raw/master/android/data-binding/readme/string_json_data_source_binding.png)
 
 <br />
 
 ---
-_**2. Convert Binding**_
+_**3. 值转换**_
 
-_convert_binding_json.txt:_
+某些时候数据源的类型可能与 view 的目标字段类型不一致，此时就需要对值进行转换。
+
+_json字符串数据源 convert_binding_json.txt:_
 ```JavaScript
 {
     name: "my name",
@@ -58,7 +67,7 @@ _convert_binding_json.txt:_
 }
 ```
 
-_BooleanToVisibilityConverter:_
+_定义一个将 boolean 转换为 visibility 的转换器:_
 ```Java
 class BooleanToVisibilityConverter implements IValueConverter {
     @Override
@@ -68,7 +77,7 @@ class BooleanToVisibilityConverter implements IValueConverter {
 }
 ```
 
-_SexToStringConverter:_
+_定义一个将 表示性别的整形值 转换为对应文本的转换器:_
 ```Java
 class SexToStringConverter implements IValueConverter {
     @Override
@@ -78,7 +87,10 @@ class SexToStringConverter implements IValueConverter {
 }
 ```
 
-_UrlToBitmapConverter:(implements **IAsyncValueConverter**)_
+_定义一个将 url字符串 转换为 bitmap 的转换器:_
+
+(为了不阻塞主线程,实现的是一个异步转换器接口 **IAsyncValueConverter**)
+
 ```Java
 class UrlToBitmapConverter implements IAsyncValueConverter {
     @Override
@@ -105,12 +117,15 @@ public class ConvertBindingActivity extends AppCompatActivity {
     @Binding(source = "name", target = "text")
     private TextView tvName;
 
+    // 使用转换器将 json 中整形字段 sex 转换为对应文案， 绑定到 TextView 的 text 上
     @ConvertBinding(source = "sex", target = "text", converter = SexToStringConverter.class)
     private TextView tvSex;
 
+    // 使用转换器将 json 中布尔字段 is_vip 转换为对应 visibility， 绑定到 TextView 的 visibility 上, 是 vip 才显示
     @ConvertBinding(source = "is_vip", target = "visibility", converter = BooleanToVisibilityConverter.class)
     private TextView tvVip;
 
+    // 使用转换器将 json 中布尔字段 head_url 转换为 bitmap， 绑定到 ImageView 的 imageBitmap 上
     @ConvertBinding(source = "head_url", target = "imageBitmap", converter = UrlToBitmapConverter.class)
     private ImageView ivHead;
 
@@ -124,21 +139,25 @@ public class ConvertBindingActivity extends AppCompatActivity {
         tvVip = (TextView) findViewById(R.id.tv_vip);
         ivHead = (ImageView) findViewById(R.id.iv_head);
 
+        // 读取json数据
         String json = Utils.readText("convert_binding_json.txt");
+        // 绑定操作
         BindingManager.binding(json, this);
     }
 
 }
 ```
 
+运行结果
+
 ![image](https://github.com/gplibs/resources/raw/master/android/data-binding/readme/convert_binding.png)
 
 <br />
 
 ---
-_**3. Multi Binding**_
+_**4. 将多个字段绑定到同一个 View 的不同属性上**_
 
-_multi_binding_json.txt:_
+_json字符串数据源 multi_binding_json.txt:_
 ```JavaScript
 {
     name: "my name",
@@ -147,7 +166,7 @@ _multi_binding_json.txt:_
 }
 ```
 
-_BooleanToVisibilityConverter:_
+_定义一个将 boolean 转换为 visibility 的转换器:_
 ```Java
 class BooleanToVisibilityConverter implements IValueConverter {
     @Override
@@ -164,6 +183,8 @@ public class MultiBindingActivity extends AppCompatActivity {
     @Binding(source = "name", target = "text")
     private TextView tvName;
 
+    // 将 json 字段 is_vip 绑定到 TextView 的 visibility 上, 是 vip 才显示
+    // 将 json 字段 vip_data 绑定到 TextView 的 text 上
     @ConvertBinding(source = "is_vip", target = "visibility", converter = BooleanToVisibilityConverter.class)
     @Binding(source = "vip_data", target = "text")
     private TextView tvVip;
@@ -176,21 +197,29 @@ public class MultiBindingActivity extends AppCompatActivity {
         tvName = (TextView) findViewById(R.id.tv_name);
         tvVip = (TextView) findViewById(R.id.tv_vip);
 
+        // 读取 json 文本
         String json = Utils.readText("multi_binding_json.txt");
+        // 绑定操作
         BindingManager.binding(json, this);
     }
 
 }
 ```
 
+运行结果
+
 ![image](https://github.com/gplibs/resources/raw/master/android/data-binding/readme/multi_binding.png)
 
 <br />
 
 ---
-_**4. Path Binding**_
+_**5. 路径绑定**_
 
-_path_binding_json.txt:_
+某些 json 有较复杂的数据结构，有子对象 或者 数组; 我们也可以将子对象或者数组中的字段绑定到 View 上;
+
+路径绑定语法中 "." 可以获取子对象; ".[数字索引]" 可以获取数组中某索引处的元素。
+
+_json字符串数据源 path_binding_json.txt:_
 ```JavaScript
 {
     name: "my name",
@@ -217,12 +246,15 @@ public class PathBindingActivity extends AppCompatActivity {
     @Binding(source = "name", target = "text")
     private TextView tvName;
 
+    // 将 json 中子对象 father 的 name 字段绑定到 TextView 的 text 上
     @Binding(source = "father.name", target = "text")
     private TextView tvFatherName;
 
+    // 将 json 中子对象 children 数组的第0个元素的 name 字段绑定到 TextView 的 text 上
     @Binding(source = "children.[0].name", target = "text")
     private TextView tvSonName;
 
+    // 将 json 中子对象 children 数组的第1个元素的 name 字段绑定到 TextView 的 text 上
     @Binding(source = "children.[1].name", target = "text")
     private TextView tvDaughterName;
 
@@ -236,25 +268,33 @@ public class PathBindingActivity extends AppCompatActivity {
         tvSonName = (TextView) findViewById(R.id.tv_son_name);
         tvDaughterName = (TextView) findViewById(R.id.tv_daughter_name);
 
+        // 读取 json 文本
         String json = Utils.readText("path_binding_json.txt");
+        // 绑定操作
         BindingManager.binding(json, this);
     }
 
 }
 ```
 
+运行结果
+
 ![image](https://github.com/gplibs/resources/raw/master/android/data-binding/readme/path_binding.png)
 
 <br />
 
 ---
-_**5. Other DataSource**_
+_**5. 其他非字符串数据源**_
 
-_a. ModelSource:_
+除了可以使用 json 字符串作为数据源外，我们也简单支持其他数据源进行绑定。
+
+_a. Model类作为数据源， 需实现 ModelSource:_
 
 ```Java
 class TestModel extends ModelSource {
 
+    // @BindingField注解作用为：让框架使用其标注的名称作为绑定中数据源字段名
+    // GSON 中的 @SerializedName 注解也有同样的效果
     @BindingField("name")
     public String name = "my name";
 
@@ -284,19 +324,25 @@ public class ModelSourceActivity extends AppCompatActivity {
         btnTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // 修改 ModelSource 的 name 属性, 界面也会一起改变。
                 testModel.setProperty("name", "new name " + (++index));
             }
         });
 
+        // 绑定操作
         BindingManager.binding(testModel, this);
     }
 
 }
 ```
 
+运行结果
+
 ![image](https://github.com/gplibs/resources/raw/master/android/data-binding/readme/model_source_0.png) ![image](https://github.com/gplibs/resources/raw/master/android/data-binding/readme/model_source_1.png)
 
-_b. ArraySource:_
+_b. 数组数据源:_
+
+可以使用 "[数字索引]" 语法将某个元素绑定到 View。
 
 ```Java
 public class ArraySourceActivity extends AppCompatActivity {
@@ -318,7 +364,9 @@ public class ArraySourceActivity extends AppCompatActivity {
 }
 ```
 
-_c. CollectionSource:_
+_c. Collection数据源:_
+
+与数组数据源一样
 
 ```Java
 public class CollectionSourceActivity extends AppCompatActivity {
@@ -343,7 +391,9 @@ public class CollectionSourceActivity extends AppCompatActivity {
 }
 ```
 
-_d. MapSource:_
+_d. Map数据源:_
+
+只支持 Key 类型为 String 的 Map。
 
 ```Java
 public class MapSourceActivity extends AppCompatActivity {
@@ -369,9 +419,9 @@ public class MapSourceActivity extends AppCompatActivity {
 <br />
 
 ---
-_**6. Mix DataSource**_
+_**6. 各种数据混合时，可以按路径语法绑定指定字段到 View 上**_
 
-_mix_binding_json.txt:_
+_json字符串数据源 mix_binding_json.txt:_
 ```JavaScript
 {
     name: "my name"
@@ -397,6 +447,7 @@ class MixTestModel extends ModelSource {
 ```Java
 public class MixDataSourceBindingActivity extends AppCompatActivity {
 
+    // 将 MixTestModel 的Map数据源字段 "data" 中key为 "my_collection" 的Collection值 中的第 "0" 个json字符串元素 中的 "name" 字段 绑定到 View
     @Binding(source = "data.my_collection.[0].name", target = "text")
     private TextView tvName;
 
@@ -417,25 +468,29 @@ public class MixDataSourceBindingActivity extends AppCompatActivity {
 <br />
 
 ---
-_**7. Custom DataSource**_
+_**7. 自定义数据源**_
+
+以下例子为一个符合英文名格式的字符串 转换为 有 "firstName" 和 "lastName" 属性的数据源。
 
 ```Java
 class UserNameAdapter implements IDataSourceAdapter<String> {
 
     @Override
     public IDataSource getDataSource(String data) {
-        if (TextUtils.isEmpty(data) || !data.matches("^[a-zA-Z]+\\s+[a-zA-Z]+$")) {
+        if (TextUtils.isEmpty(data) || !data.matches("^([a-zA-Z]+\\s)+[a-zA-Z]+$")) {
             return null;
         }
-        final String[] a = data.split("\\s+");
+        int i = data.indexOf(" ");
+        String f = data.substring(0, i);
+        String l = data.substring(i + 1);
         return new IDataSource() {
             @Override
             public Object getProperty(String propertyName) {
                 if ("firstName".equals(propertyName)) {
-                    return a[0];
+                    return f;
                 }
                 if ("lastName".equals(propertyName)) {
-                    return a[1];
+                    return l;
                 }
                 return "";
             }
@@ -478,16 +533,18 @@ public class CustomDataSourceAdapterActivity extends AppCompatActivity {
 <br />
 
 ---
-_**8. Notes**_
+_**8. 备注**_
 
 @Binding(source = "..", **target** = "text")
 
-xx.set**Text**(text)  target is "**text**"
+绑定时 target 即绑定到 View 的目标属性， 取值按如下规律：
 
-xx.set**Visibility**(visibility)  target is "**visibility**"
+xx.set**Text**(text) | target = "**text**"
 
-xx.set**BackgroundColor**(color)  target is "**backgroundColor**"
+xx.set**Visibility**(visibility) | target = "**visibility**"
+
+xx.set**BackgroundColor**(color) | target = "**backgroundColor**"
 
 ...
 
-and so on
+以此类推
